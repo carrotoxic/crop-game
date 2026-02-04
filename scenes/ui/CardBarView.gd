@@ -104,14 +104,18 @@ func _show_tooltip_for(btn: Button) -> void:
 	var cells: Array[Vector2i] = CropAbilityInfo.get_effect_cells(crop_id)
 	var center_color := Color(0.6, 0.85, 0.6)
 	var range_color := Color(0.75, 0.9, 0.75)
+	var pumpkin_range_color: Color = GameTheme.NON_PLANTABLE  # soft red: doesn't want other plants in 1 range
 	for j in 5:
 		for i in 5:
 			var idx: int = j * 5 + i
 			var r := grid_holder.get_child(idx) as ColorRect
 			var p := Vector2i(i, j)
 			var in_range: bool = p in cells
-			if in_range and p == Vector2i(2, 2):
+			var is_center: bool = p == Vector2i(2, 2)
+			if in_range and is_center:
 				r.color = center_color
+			elif in_range and crop_id == "pumpkin":
+				r.color = pumpkin_range_color
 			elif in_range:
 				r.color = range_color
 			else:

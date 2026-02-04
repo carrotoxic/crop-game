@@ -4,7 +4,7 @@ extends RefCounted
 const CROP_PATHS := {
 	"pumpkin": "res://data/crops/pumpkin.tres",
 	"chili": "res://data/crops/chili.tres",
-	"moneyplant": "res://data/crops/moneyplant.tres",
+	"rose": "res://data/crops/rose.tres",
 	"strawberry": "res://data/crops/strawberry.tres",
 	"sunflower": "res://data/crops/sunflower.tres"
 }

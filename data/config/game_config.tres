@@ -10,5 +10,4 @@ board_size = Vector2i(5, 5)
 turns_per_stage = 10
 pest_start_turn = 3
 pest_destroy_rounds = 3
-moneyplant_self_destruct_prob = 0.1
 seed_value = 12345

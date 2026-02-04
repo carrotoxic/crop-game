@@ -8,9 +8,9 @@ static func get_ability_text(crop_id: String) -> String:
 		"pumpkin":
 			return "If no crops within 1 tile when planted: grows 1 turn faster."
 		"chili":
-			return "Immune to pests. On plant: removes pests from all crops within 2 tiles."
-		"moneyplant":
-			return "Each turn: 10%% chance to self-destruct (no payout)."
+			return "Immune to pests. On plant: removes pests from crops in horizontal and vertical lines, range 2."
+		"rose":
+			return "Plants in the 8 cells around it cannot be infested by pest. Rose can get pest and can be destroyed by pest (3 rounds). Pest on Rose cannot be removed (e.g. by Chili)."
 		"strawberry":
 			return "Sell price +1 for each connected Strawberry (N/E/S/W)."
 		"sunflower":
@@ -28,11 +28,18 @@ static func get_effect_cells(crop_id: String) -> Array[Vector2i]:
 					if dx != 0 or dy != 0:
 						out.append(Vector2i(c.x + dx, c.y + dy))
 		"chili":
-			for dx in range(-2, 3):
-				for dy in range(-2, 3):
-					out.append(Vector2i(c.x + dx, c.y + dy))
-		"moneyplant":
 			out.append(c)
+			for step in range(1, 3):
+				out.append(Vector2i(c.x, c.y - step))
+				out.append(Vector2i(c.x + step, c.y))
+				out.append(Vector2i(c.x, c.y + step))
+				out.append(Vector2i(c.x - step, c.y))
+		"rose":
+			out.append(c)
+			for dx in range(-1, 2):
+				for dy in range(-1, 2):
+					if dx != 0 or dy != 0:
+						out.append(Vector2i(c.x + dx, c.y + dy))
 		"strawberry":
 			out.append(c)
 			out.append(Vector2i(c.x, c.y - 1))

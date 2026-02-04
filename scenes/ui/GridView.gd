@@ -119,6 +119,7 @@ func _refresh_cell(pos: Vector2i) -> void:
 			line2 += "\nHarvest!"
 		var line3: String = ""
 		if cell.has_pest:
+			# Rose shows P:0/3 (counter never increases); other crops show progress
 			line3 = "P:%d/3" % cell.pest_rounds
 		elif is_telegraph:
 			line3 = "!!"

@@ -23,8 +23,8 @@ func _ready() -> void:
 		"• From turn 3: one pest per turn (shown 1 turn ahead). Pest blocks growth; 3 rounds untreated = crop destroyed. Chili is immune.",
 		"• You cannot plant the same crop on the cell where you last planted that crop. Plant a different crop there first to be able to plant the original again.",
 		"• Pumpkin: Grows 1 turn faster if no crops within 1 tile when planted.",
-		"• Chili: Immune to pests. On plant, removes pests in 2-tile radius.",
-		"• Money Plant: 10% chance each turn to self-destruct (no payout).",
+		"• Chili: Immune to pests. On plant, removes pests in horizontal and vertical lines (range 2).",
+		"• Rose: Plants in 1 range (8 around) cannot be infested. Rose can get pest and be destroyed by pest. Pest on Rose cannot be removed.",
 		"• Strawberry: Sell price +1 per connected Strawberry (N/E/S/W).",
 		"• Sunflower: Sell price +1 per plant on its 4 diagonal lines.",
 	]

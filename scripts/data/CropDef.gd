@@ -2,7 +2,7 @@
 class_name CropDef
 extends Resource
 
-enum Type { PUMPKIN, CHILI, MONEY_PLANT, STRAWBERRY, SUNFLOWER }
+enum Type { PUMPKIN, CHILI, ROSE, STRAWBERRY, SUNFLOWER }
 
 @export var id: String = ""
 @export var display_name: String = ""

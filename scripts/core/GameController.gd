@@ -52,15 +52,18 @@ func plant(cell: Vector2i, crop_id: String) -> bool:
 				break
 		if isolated:
 			inst.remaining_grow = maxi(1, def.grow_time - 1)
-	# Chili: remove pests in range <= 2
+	# Chili: remove pests in orthogonal range 2 (cannot remove pest from rose)
 	if def.type_enum == CropDef.Type.CHILI:
-		var in_range := GridRules.cells_in_chebyshev(state.size, cell, def.chili_clean_radius)
+		var in_range: Array[Vector2i] = GridRules.cells_orthogonal(state.size, cell, def.chili_clean_radius)
 		in_range.append(cell)
 		for p in in_range:
 			var c = state.get_cell(p)
-			if c and c.has_pest:
-				c.has_pest = false
-				c.pest_rounds = 0
+			if not c or not c.has_pest:
+				continue
+			if String(c.def_id) == "rose":
+				continue  # Rose pest cannot be removed by any means
+			c.has_pest = false
+			c.pest_rounds = 0
 	# Clear this cell from every crop's forbidden list (planting something else here frees it for other crops)
 	state.remove_forbidden_for_cell(cell)
 	state.set_cell(cell, inst)
@@ -87,15 +90,18 @@ func end_turn() -> void:
 		return
 	var cfg := config
 	var st := state
-	# Step 1: apply telegraphed pest (if global_turn >= 3); Chili immune; harvestable crops not targeted
+	# Step 1: apply telegraphed pest; cells in 1 range of Rose are protected; Chili immune; only apply if cell doesn't already have pest
 	if st.global_turn >= cfg.pest_start_turn and st.has_pest_telegraph():
-		var c = st.get_cell(st.next_pest_target)
-		if c and not c.has_pest and c.def_id != "chili" and c.remaining_grow > 0:
-			c.has_pest = true
-			c.pest_rounds = 0
+		var target: Vector2i = st.next_pest_target
+		var protected_set: Dictionary = _get_cells_protected_by_rose(st)
+		if not protected_set.has(target):
+			var c = st.get_cell(target)
+			if c and c.def_id != "chili" and c.remaining_grow > 0 and not c.has_pest:
+				c.has_pest = true
+				c.pest_rounds = 0
 		st.next_pest_target = Vector2i(-1, -1)
 
-	# Step 2: pest rounds + destroy
+	# Step 2: pest rounds + destroy (Rose can be destroyed by pest like others; pest on Rose cannot be removed)
 	for y in st.size.y:
 		for x in st.size.x:
 			var p: Vector2i = Vector2i(x, y)
@@ -106,16 +112,7 @@ func end_turn() -> void:
 					st.clear_cell(p)
 					cell_changed.emit(p, null)
 
-	# Step 3: Money Plant self-destruct
-	for y in st.size.y:
-		for x in st.size.x:
-			var p: Vector2i = Vector2i(x, y)
-			var c = st.get_cell(p)
-			if c and c.def_id == "moneyplant" and st.rng.randf() < cfg.moneyplant_self_destruct_prob:
-				st.clear_cell(p)
-				cell_changed.emit(p, null)
-
-	# Step 4: growth tick
+	# Step 3: growth tick (pest blocks growth)
 	for y in st.size.y:
 		for x in st.size.x:
 			var pos: Vector2i = Vector2i(x, y)
@@ -123,12 +120,10 @@ func end_turn() -> void:
 			if c and not c.has_pest and c.remaining_grow > 0:
 				c.remaining_grow -= 1
 
-	# Step 5: no auto-harvest; player harvests by clicking harvestable cells
+	# Step 4: no auto-harvest; player harvests by clicking harvestable cells
 
-	# Step 6: advance turn counters then stage end check (strictly 10 turns per stage)
-	st.global_turn += 1
-	st.turn_in_stage += 1
-	if st.turn_in_stage == 11:
+	# Step 5: stage end check before incrementing (so display stays 10/10 when showing popup)
+	if st.turn_in_stage == 10:
 		if st.money >= st.stage_requirements[st.stage_index]:
 			if st.stage_index == 3:
 				game_ended = true
@@ -145,15 +140,23 @@ func end_turn() -> void:
 			game_over.emit(false, "Stage requirement not met by turn 10.")
 			return
 
-	# Step 7: next pest telegraph (for next turn); Chili and harvestable crops not targeted
+	# Step 6: advance turn counters
+	st.global_turn += 1
+	st.turn_in_stage += 1
+
+	# Step 7: next pest telegraph; cells protected by Rose (range 1) cannot be targeted; Chili and harvestable not targeted
 	if st.global_turn + 1 >= cfg.pest_start_turn:
+		var protected_set: Dictionary = _get_cells_protected_by_rose(st)
 		var candidates: Array[Vector2i] = []
 		for y in st.size.y:
 			for x in st.size.x:
 				var p: Vector2i = Vector2i(x, y)
+				if protected_set.has(p):
+					continue
 				var c = st.get_cell(p)
-				if c and not c.has_pest and c.def_id != "chili" and c.remaining_grow > 0:
-					candidates.append(p)
+				if not c or c.def_id == "chili" or c.remaining_grow <= 0 or c.has_pest:
+					continue
+				candidates.append(p)
 		if candidates.size() > 0:
 			st.next_pest_target = candidates[st.rng.randi() % candidates.size()]
 			pest_telegraphed.emit(st.next_pest_target)
@@ -168,6 +171,17 @@ func continue_to_next_stage() -> void:
 	state.turn_in_stage = 1
 	stage_changed.emit(state.stage_index)
 	state_changed.emit(state)
+
+func _get_cells_protected_by_rose(st: GameState) -> Dictionary:
+	var protected: Dictionary = {}
+	for y in st.size.y:
+		for x in st.size.x:
+			var p: Vector2i = Vector2i(x, y)
+			var c = st.get_cell(p)
+			if c and c.def_id == "rose":
+				for q in GridRules.cells_in_chebyshev(st.size, p, 1):
+					protected[q] = true
+	return protected
 
 func get_sell_price(pos: Vector2i) -> int:
 	var c = state.get_cell(pos)

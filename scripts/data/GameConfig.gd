@@ -8,5 +8,4 @@ extends Resource
 @export var turns_per_stage: int = 10
 @export var pest_start_turn: int = 3
 @export var pest_destroy_rounds: int = 3
-@export var moneyplant_self_destruct_prob: float = 0.10
 @export var seed_value: int = 12345

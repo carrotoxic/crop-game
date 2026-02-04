@@ -26,6 +26,18 @@ static func four_neighbors(size: Vector2i, pos: Vector2i) -> Array[Vector2i]:
 			out.append(p)
 	return out
 
+# Cells on horizontal and vertical (orthogonal) rays from pos, up to range_dist steps each way.
+static func cells_orthogonal(size: Vector2i, pos: Vector2i, range_dist: int) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var dirs: Array[Vector2i] = [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]
+	for d in dirs:
+		for step in range(1, range_dist + 1):
+			var p: Vector2i = Vector2i(pos.x + d.x * step, pos.y + d.y * step)
+			if not in_bounds(size, p):
+				break
+			out.append(p)
+	return out
+
 static func diag_rays_from(size: Vector2i, pos: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	for step in [Vector2i(1, 1), Vector2i(1, -1), Vector2i(-1, 1), Vector2i(-1, -1)]:
