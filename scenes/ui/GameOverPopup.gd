@@ -22,6 +22,7 @@ func show_result(won: bool, reason: String) -> void:
 	_closing_by_restart = false
 	title_label.text = "You Win!" if won else "Game Over"
 	reason_label.text = reason
+	restart_btn.text = "Continue" if won else "Restart"
 	exclusive = true
 	popup_centered()
 

@@ -1,6 +1,6 @@
 extends Control
 
-const CELL_SIZE := 88
+const CELL_SIZE := 100
 const GRID_GAP := 4
 const NAME_MAX_LEN := 6
 

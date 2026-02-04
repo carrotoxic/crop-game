@@ -14,7 +14,7 @@ static func get_ability_text(crop_id: String) -> String:
 		"strawberry":
 			return "Sell price +1 for each connected Strawberry (N/E/S/W)."
 		"sunflower":
-			return "Sell price +1 for each plant on its 4 diagonal lines."
+			return "Sell price +2 for each plant on its 4 diagonal lines."
 	return ""
 
 static func get_effect_cells(crop_id: String) -> Array[Vector2i]:

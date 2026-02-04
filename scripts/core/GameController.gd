@@ -51,7 +51,7 @@ func plant(cell: Vector2i, crop_id: String) -> bool:
 				isolated = false
 				break
 		if isolated:
-			inst.remaining_grow = maxi(1, def.grow_time - 1)
+			inst.remaining_grow = maxi(1, def.grow_time - 2)
 	# Chili: remove pests in orthogonal range 2 (cannot remove pest from rose)
 	if def.type_enum == CropDef.Type.CHILI:
 		var in_range: Array[Vector2i] = GridRules.cells_orthogonal(state.size, cell, def.chili_clean_radius)
@@ -125,10 +125,10 @@ func end_turn() -> void:
 	# Step 5: stage end check before incrementing (so display stays 10/10 when showing popup)
 	if st.turn_in_stage == 10:
 		if st.money >= st.stage_requirements[st.stage_index]:
-			if st.stage_index == 3:
+			if st.stage_index == 4:
 				game_ended = true
 				state_changed.emit(state)
-				game_over.emit(true, "Stage 4 cleared!")
+				game_over.emit(true, "You are the Master Gardener")
 				return
 			stage_clear_showing = true
 			state_changed.emit(state)

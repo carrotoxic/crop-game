@@ -37,7 +37,3 @@ value = 15.0
 [node name="Telegraph" type="Label" parent="Margin/VBox"]
 layout_mode = 2
 text = ""
-
-[node name="EndTurn" type="Button" parent="Margin/VBox"]
-layout_mode = 2
-text = "End Turn"

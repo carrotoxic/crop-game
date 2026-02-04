@@ -56,6 +56,14 @@ anchor_bottom = 1.0
 layout_mode = 2
 size_flags_horizontal = 4
 
+[node name="EndTurnRow" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot"]
+layout_mode = 2
+
+[node name="EndTurn" type="Button" parent="UI/HBoxRoot/VBoxRoot/EndTurnRow"]
+custom_minimum_size = Vector2(130, 38)
+layout_mode = 2
+text = "End Turn"
+
 [node name="CardBar" parent="UI/HBoxRoot/VBoxRoot" instance=ExtResource("6_cards")]
 layout_mode = 2
 
