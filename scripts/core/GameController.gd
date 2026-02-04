@@ -16,6 +16,7 @@ var stage_clear_showing: bool = false
 
 var plant_pointer = preload("res://scenes/main/plant_pointer.tscn")
 var pest = preload("res://scenes/main/pests.tscn")
+var blocked = preload("res://scenes/main/blocker.tscn")
 
 func _ready() -> void:
 	add_to_group("game_controller")
@@ -34,6 +35,7 @@ func can_plant(cell: Vector2i, crop_id: String) -> bool:
 	if not def or state.get_cell(cell) != null:
 		return false
 	if state.is_cell_forbidden_for_crop(cell, crop_id):
+		print("failed")
 		return false
 	return state.money >= def.cost
 
@@ -97,6 +99,19 @@ func harvest(cell: Vector2i) -> bool:
 			child.free()
 			break;
 	return true
+
+func update_plantable():
+	var st := state
+	var block = _get_cells_with_block(st)
+	var check = $"../Node2D/Blocked"
+	var children = check.get_children()
+	for child in children:
+			child.free()
+	if(block.size() > 0):
+		for c in block:
+			var temp = blocked.instantiate()
+			temp.position = Vector2(-64.0 + 32 * c.x, -64.0 + 32 * c.y)
+			check.add_child(temp)
 
 func set_pests_visual():
 	var st := state
@@ -236,6 +251,16 @@ func _get_cells_with_pests(st: GameState):
 			if c != null and c.has_pest:
 				infected.append(Vector2(x, y))
 	return infected
+	
+func _get_cells_with_block(st: GameState):
+	var block = []
+	for y in st.size.y:
+		for x in st.size.x:
+			var p: Vector2i = Vector2i(x, y)
+			var c = st.get_cell(p)
+			if st.is_cell_forbidden_for_crop(p, Global.last_crop):
+				block.append(Vector2(x, y))
+	return block
 
 func get_sell_price(pos: Vector2i) -> int:
 	var c = state.get_cell(pos)
