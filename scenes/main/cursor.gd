@@ -22,6 +22,10 @@ func _index_for(pos: Vector2i) -> int:
 	return pos.y * _controller.state.size.x + pos.x
 
 func _process(delta):
+	var mouseClamp = (get_global_mouse_position() + Vector2(80.0, 80.0))/32
+	mouseClamp = mouseClamp.floor()
+	set_selected_crop(Global.last_crop)
+	"""
 	if Input.is_action_just_pressed("move_forward") and currPos.y > 0 and mode == 1:
 		currPos.y -= 1
 	elif Input.is_action_just_pressed("move_backward") and currPos.y < 4 and mode == 1:
@@ -30,11 +34,25 @@ func _process(delta):
 		currPos.x -= 1
 	elif Input.is_action_just_pressed("move_right") and currPos.x < 4:
 		currPos.x += 1
-	if Input.is_action_just_pressed("exit") and mode == 1:
-		mode = 0
-		currPos.x = 0
+	"""
+	currPos.x = mouseClamp.x
+	if mode == 1:
+		currPos.y = mouseClamp.y
+	else:
 		currPos.y = 0
-	elif Input.is_action_just_pressed("select"):
+	if currPos.x > 4:
+		currPos.x = 4
+	elif currPos.x < 0:
+		currPos.x = 0
+	if currPos.y > 4:
+		currPos.y = 4
+	elif currPos.y < 0:
+		currPos.y = 0
+	if mouseClamp.y < 5:
+		mode = 1
+	else:
+		mode = 0
+	if Input.is_action_just_pressed("select"):
 		if mode == 1:
 			var cell = _controller.state.get_cell(currPos)
 			if cell and cell.remaining_grow <= 0:
@@ -50,24 +68,7 @@ func _process(delta):
 				
 				return
 			if not _selected_crop_id.is_empty() and cell == null:
+				print("planting")
 				_controller.plant(currPos, _selected_crop_id)
-		elif mode == 0:
-			mode = 1
-			match currPos.x:
-				0:
-					_selected_crop_id = "pumpkin"
-				1:
-					_selected_crop_id = "chili"
-				2:
-					_selected_crop_id = "rose"
-				3:
-					_selected_crop_id = "strawberry"
-				4:
-					_selected_crop_id = "sunflower"
-			currPos.x = 0
-			currPos.y = 0
-			Global.last_crop = -1
-	if mode == 0:
-		Global.last_crop = currPos.x
 	var baseY = -64 if mode == 1 else 160
 	self.position = Vector2(-64.0 + (32.0 * currPos.x), baseY + (32.0 * currPos.y))

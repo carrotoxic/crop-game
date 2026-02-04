@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ioooon5pdv8b" path="res://scenes/main/plant_pointer.gd" id="1_pnw0q"]
 [ext_resource type="Texture2D" uid="uid://dnwh2jws68wuo" path="res://art/plants-Sheet.png" id="2_2dhlh"]
+[ext_resource type="FontFile" uid="uid://c0ya42j2a5i2v" path="res://art/pixel_operator/PixelOperatorHB.ttf" id="3_ctbmm"]
+[ext_resource type="FontFile" uid="uid://do6hj605mik8x" path="res://art/pixel_operator/PixelOperator-Bold.ttf" id="4_bqlpr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ctbmm"]
 atlas = ExtResource("2_2dhlh")
@@ -11,4 +13,19 @@ region = Rect2(160, 0, 32, 32)
 script = ExtResource("1_pnw0q")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2052836728]
+self_modulate = Color(1, 1, 1, 0.49019608)
+scale = Vector2(0.99381167, 1)
 texture = SubResource("AtlasTexture_ctbmm")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1945800841]
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 30.0
+theme_override_fonts/normal_font = ExtResource("3_ctbmm")
+theme_override_fonts/bold_font = ExtResource("4_bqlpr")
+theme_override_font_sizes/normal_font_size = 8
+text = "Temp"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1

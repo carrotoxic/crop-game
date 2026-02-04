@@ -20,13 +20,10 @@ func _ready() -> void:
 	_build_cards()
 
 func _process(delta: float) -> void:
-	get_child(0).visible = false
-	#if _tooltip_timer >= 0:
-	#	_tooltip_timer -= delta
-	if Global.last_crop != -1:
-		_show_tooltip_for(_card_buttons[Global.last_crop])
-	else:
-		_tooltip.hide()
+	if _tooltip_timer >= 0:
+		_tooltip_timer -= delta
+		if _tooltip_timer < 0 and _hovered_btn:
+			_show_tooltip_for(_hovered_btn)
 
 func _build_tooltip() -> void:
 	_tooltip = PopupPanel.new()
@@ -42,9 +39,9 @@ func _build_tooltip() -> void:
 	vbox.add_theme_constant_override("separation", 8)
 	var desc_label := Label.new()
 	desc_label.name = "Desc"
-	desc_label.add_theme_font_size_override("font_size", 16)
-	desc_label.add_theme_color_override("font_color", GameTheme.TEXT_DARK)
+	desc_label.add_theme_font_size_override("font_size", 14)
 	desc_label.add_theme_font_override("font", load("res://art/pixel_operator/PixelOperatorHB.ttf"))
+	desc_label.add_theme_color_override("font_color", GameTheme.TEXT_DARK)
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.custom_minimum_size = Vector2(200, 0)
 	vbox.add_child(desc_label)
@@ -76,7 +73,8 @@ func _build_cards() -> void:
 		btn.button_group = group
 		btn.custom_minimum_size = Vector2(152, 80)
 		btn.toggle_mode = true
-		btn.add_theme_font_size_override("font_size", 13)
+		btn.add_theme_font_size_override("font_size", 16)
+		btn.add_theme_font_override("font", load("res://art/pixel_operator/PixelOperatorHB.ttf"))
 		btn.add_theme_color_override("font_color", GameTheme.TEXT_DARK)
 		btn.add_theme_color_override("font_disabled_color", GameTheme.TEXT_MUTED)
 		btn.set_meta("crop_id", def.id)
@@ -129,7 +127,7 @@ func _show_tooltip_for(btn: Button) -> void:
 	var min_sz: Vector2 = content.get_combined_minimum_size()
 	_tooltip.set_size(min_sz)
 	var rect: Rect2 = btn.get_global_rect()
-	var pos: Vector2i = Vector2i(int(rect.position.x), int(rect.position.y - min_sz.y - 100))
+	var pos: Vector2i = Vector2i(int(rect.position.x), int(rect.position.y - min_sz.y - 4))
 	var size_i: Vector2i = Vector2i(int(min_sz.x), int(min_sz.y))
 	_tooltip.popup(Rect2i(pos, size_i))
 
@@ -155,6 +153,9 @@ func _select_card(crop_id: String) -> void:
 	var grid = get_tree().get_first_node_in_group("grid_view")
 	if grid and grid.has_method("set_selected_crop"):
 		grid.set_selected_crop(crop_id)
+	Global.last_crop = crop_id
+	_controller.update_plantable()
+	
 
 func _on_state_changed(state: GameState) -> void:
 	for btn in _card_buttons:

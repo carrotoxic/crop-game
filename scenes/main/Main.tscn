@@ -172,6 +172,8 @@ script = ExtResource("12_p5fgu")
 [node name="Camera2D" type="Camera2D" parent="Node2D" unique_id=395265678]
 zoom = Vector2(2, 2)
 
-[node name="Pointers" type="Node2D" parent="Node2D" unique_id=1609352134]
+[node name="Blocked" type="Node2D" parent="Node2D" unique_id=316175121]
 
 [node name="PestsHome" type="Node2D" parent="Node2D" unique_id=831342633]
+
+[node name="Pointers" type="Node2D" parent="Node2D" unique_id=1609352134]

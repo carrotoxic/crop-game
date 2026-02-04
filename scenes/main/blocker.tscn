@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bmp5mw5tdlxe"]
+
+[ext_resource type="Texture2D" uid="uid://d0im0tcpq21ar" path="res://art/Cross-Sheet.png" id="1_p2mn8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qrr3m"]
+atlas = ExtResource("1_p2mn8")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_quewm"]
+atlas = ExtResource("1_p2mn8")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7rda1"]
+atlas = ExtResource("1_p2mn8")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1i3fx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qrr3m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_quewm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7rda1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Blocker" type="Node2D" unique_id=1685777340]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1958419849]
+modulate = Color(1, 1, 1, 0.49019608)
+sprite_frames = SubResource("SpriteFrames_1i3fx")
+autoplay = "default"
+frame_progress = 0.4055937
