@@ -15,16 +15,16 @@ run/main_scene="res://scenes/main/Main.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[physics]
-
-3d/physics_engine="Jolt Physics"
-
 [display]
 
 window/size/viewport_width=720
 window/size/viewport_height=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
 
 [rendering]
 

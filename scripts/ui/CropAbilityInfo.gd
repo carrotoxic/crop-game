@@ -10,11 +10,11 @@ static func get_ability_text(crop_id: String) -> String:
 		"chili":
 			return "Immune to pests. On plant: removes pests from crops in horizontal and vertical lines, range 2."
 		"rose":
-			return "Plants in the 8 cells around it cannot be infested by pest. Rose can get pest and can be destroyed by pest (3 rounds). Pest on Rose cannot be removed (e.g. by Chili)."
+			return "Other plants (not roses) in the 8 cells around it cannot be infested by pest. Rose can get pest even when fully grown, and can be destroyed by pest (3 rounds). Pest on Rose cannot be removed (e.g. by Chili)."
 		"strawberry":
 			return "Sell price +1 for each connected Strawberry (N/E/S/W)."
 		"sunflower":
-			return "Sell price +2 for each plant on its 4 diagonal lines."
+			return "When fully grown: growth -1 once for each plant on its 4 diagonal lines."
 	return ""
 
 static func get_effect_cells(crop_id: String) -> Array[Vector2i]:

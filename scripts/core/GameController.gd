@@ -96,7 +96,8 @@ func end_turn() -> void:
 		var protected_set: Dictionary = _get_cells_protected_by_rose(st)
 		if not protected_set.has(target):
 			var c = st.get_cell(target)
-			if c and c.def_id != "chili" and c.remaining_grow > 0 and not c.has_pest:
+			var can_infest: bool = c and c.def_id != "chili" and not c.has_pest and (c.remaining_grow > 0 or c.def_id == "rose")
+			if can_infest:
 				c.has_pest = true
 				c.pest_rounds = 0
 		st.next_pest_target = Vector2i(-1, -1)
@@ -112,13 +113,18 @@ func end_turn() -> void:
 					st.clear_cell(p)
 					cell_changed.emit(p, null)
 
-	# Step 3: growth tick (pest blocks growth)
+	# Step 3: growth tick (pest blocks growth); Sunflower once when fully grown: growth-1 for plants on its 4 diagonals
 	for y in st.size.y:
 		for x in st.size.x:
 			var pos: Vector2i = Vector2i(x, y)
 			var c = st.get_cell(pos)
 			if c and not c.has_pest and c.remaining_grow > 0:
 				c.remaining_grow -= 1
+				if c.remaining_grow == 0 and c.def_id == "sunflower":
+					for q in GridRules.diag_rays_from(st.size, pos):
+						var other = st.get_cell(q)
+						if other and not other.has_pest and other.remaining_grow > 0:
+							other.remaining_grow -= 1
 
 	# Step 4: no auto-harvest; player harvests by clicking harvestable cells
 
@@ -144,7 +150,7 @@ func end_turn() -> void:
 	st.global_turn += 1
 	st.turn_in_stage += 1
 
-	# Step 7: next pest telegraph; cells protected by Rose (range 1) cannot be targeted; Chili and harvestable not targeted
+	# Step 7: next pest telegraph; cells protected by Rose (range 1) cannot be targeted; Chili and harvestable not targeted (except Rose can be targeted when harvestable)
 	if st.global_turn + 1 >= cfg.pest_start_turn:
 		var protected_set: Dictionary = _get_cells_protected_by_rose(st)
 		var candidates: Array[Vector2i] = []
@@ -154,7 +160,9 @@ func end_turn() -> void:
 				if protected_set.has(p):
 					continue
 				var c = st.get_cell(p)
-				if not c or c.def_id == "chili" or c.remaining_grow <= 0 or c.has_pest:
+				if not c or c.def_id == "chili" or c.has_pest:
+					continue
+				if c.remaining_grow <= 0 and c.def_id != "rose":
 					continue
 				candidates.append(p)
 		if candidates.size() > 0:
@@ -180,6 +188,9 @@ func _get_cells_protected_by_rose(st: GameState) -> Dictionary:
 			var c = st.get_cell(p)
 			if c and c.def_id == "rose":
 				for q in GridRules.cells_in_chebyshev(st.size, p, 1):
+					var at_q = st.get_cell(q)
+					if at_q and at_q.def_id == "rose":
+						continue  # Rose does not protect other roses
 					protected[q] = true
 	return protected
 
@@ -197,12 +208,6 @@ func _harvest_price(pos: Vector2i, crop: CropInstance) -> int:
 	if crop.def_id == "strawberry":
 		var comp := GridRules.connected_component_4dir(state.grid, state.size, pos, "strawberry")
 		price += comp.size() - 1
-	if crop.def_id == "sunflower":
-		var diag: Array[Vector2i] = GridRules.diag_rays_from(state.size, pos)
-		for i in range(diag.size()):
-			var p: Vector2i = diag[i]
-			if state.get_cell(p) != null:
-				price += 1
 	return price
 
 func restart() -> void:
