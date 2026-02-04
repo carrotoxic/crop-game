@@ -18,10 +18,10 @@ func _ready() -> void:
 	title.add_theme_color_override("font_color", GameTheme.TEXT_DARK)
 	vbox.add_child(title)
 	var rules: Array[String] = [
-		"• 8×8 grid. Each turn: optionally plant one crop (click card, then empty cell). Grown crops (green) can be harvested by clicking; price is calculated when you harvest. Then End Turn.",
-		"• 5 stages, 10 turns each. Meet the money requirement by end of stage or Game Over.",
-		"• From turn 3: one pest per turn (shown 1 turn ahead). Pest blocks growth; 3 rounds untreated = crop destroyed.",
-		"• You cannot plant the same crop on a cell where you last planted that crop. Plant a different crop there first to plant the original again.",
+		"• 8×8 grid. Each turn, you may plant one crop on an empty cell. Fully grown crops (green) can be harvested; money is calculated on harvest. End the turn afterward.",
+		"• The game has 5 stages, each lasting 10 turns. You must meet the money requirement by the end of each stage or the game ends.",
+		"• Starting on turn 3, one pest appears per turn (shown one turn in advance). Pests block growth; if untreated for 3 turns, the crop is destroyed.",
+		"• You cannot plant the same crop on a cell consecutively. Plant a different crop on that cell before planting the original again.",
 	]
 	for r in rules:
 		var lbl := Label.new()
