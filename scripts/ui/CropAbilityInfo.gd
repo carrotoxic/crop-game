@@ -1,0 +1,53 @@
+class_name CropAbilityInfo
+extends RefCounted
+
+const GRID_CENTER := Vector2i(2, 2)
+
+static func get_ability_text(crop_id: String) -> String:
+	match crop_id:
+		"pumpkin":
+			return "If no crops within 1 tile when planted: grows 1 turn faster."
+		"chili":
+			return "Immune to pests. On plant: removes pests from all crops within 2 tiles."
+		"moneyplant":
+			return "Each turn: 10%% chance to self-destruct (no payout)."
+		"strawberry":
+			return "Sell price +1 for each connected Strawberry (N/E/S/W)."
+		"sunflower":
+			return "Sell price +1 for each plant on its 4 diagonal lines."
+	return ""
+
+static func get_effect_cells(crop_id: String) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var c := GRID_CENTER
+	match crop_id:
+		"pumpkin":
+			out.append(c)
+			for dx in range(-1, 2):
+				for dy in range(-1, 2):
+					if dx != 0 or dy != 0:
+						out.append(Vector2i(c.x + dx, c.y + dy))
+		"chili":
+			for dx in range(-2, 3):
+				for dy in range(-2, 3):
+					out.append(Vector2i(c.x + dx, c.y + dy))
+		"moneyplant":
+			out.append(c)
+		"strawberry":
+			out.append(c)
+			out.append(Vector2i(c.x, c.y - 1))
+			out.append(Vector2i(c.x + 1, c.y))
+			out.append(Vector2i(c.x, c.y + 1))
+			out.append(Vector2i(c.x - 1, c.y))
+		"sunflower":
+			out.append(c)
+			for i in range(1, 3):
+				for sx in [-1, 1]:
+					for sy in [-1, 1]:
+						var p := Vector2i(c.x + sx * i, c.y + sy * i)
+						if p.x >= 0 and p.x < 5 and p.y >= 0 and p.y < 5:
+							out.append(p)
+	return out
+
+static func is_center_cell(crop_id: String, local: Vector2i) -> bool:
+	return local == GRID_CENTER

@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/core/GameController.gd" id="1_script"]
+[ext_resource type="Script" path="res://scenes/main/Main.gd" id="2_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RuleBoard.tscn" id="3_rules"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GridView.tscn" id="5_grid"]
+[ext_resource type="PackedScene" path="res://scenes/ui/CardBar.tscn" id="6_cards"]
+[ext_resource type="PackedScene" path="res://scenes/ui/GameOverPopup.tscn" id="7_popup"]
+[ext_resource type="PackedScene" path="res://scenes/ui/StageClearPopup.tscn" id="8_stage"]
+
+[node name="Main" type="Node"]
+script = ExtResource("2_script")
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("1_script")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Background" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.98, 0.973, 0.961, 1)
+
+[node name="HBoxRoot" type="HBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 8
+
+[node name="RuleBoard" parent="UI/HBoxRoot" instance=ExtResource("3_rules")]
+layout_mode = 2
+
+[node name="VBoxRoot" type="VBoxContainer" parent="UI/HBoxRoot"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="HUD" parent="UI/HBoxRoot/VBoxRoot" instance=ExtResource("4_hud")]
+layout_mode = 2
+
+[node name="GridArea" type="Control" parent="UI/HBoxRoot/VBoxRoot"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot/GridArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="GridView" parent="UI/HBoxRoot/VBoxRoot/GridArea/CenterContainer" instance=ExtResource("5_grid")]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CardBar" parent="UI/HBoxRoot/VBoxRoot" instance=ExtResource("6_cards")]
+layout_mode = 2
+
+[node name="GameOverPopup" parent="." instance=ExtResource("7_popup")]
+
+[node name="StageClearPopup" parent="." instance=ExtResource("8_stage")]

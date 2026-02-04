@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/HUDView.gd" id="1_script"]
+
+[node name="HUD" type="PanelContainer"]
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StageTurn" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Stage 1 | Turn 1/10"
+
+[node name="Money" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Money: 15"
+
+[node name="Requirement" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Requirement: 10"
+
+[node name="ReqBar" type="ProgressBar" parent="Margin/VBox"]
+custom_minimum_size = Vector2(200, 14)
+layout_mode = 2
+max_value = 10.0
+value = 15.0
+
+[node name="Telegraph" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = ""
+
+[node name="EndTurn" type="Button" parent="Margin/VBox"]
+layout_mode = 2
+text = "End Turn"

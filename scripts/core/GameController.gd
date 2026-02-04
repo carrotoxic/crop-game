@@ -1,0 +1,215 @@
+class_name GameController
+extends Node
+
+signal state_changed(state: GameState)
+signal cell_changed(pos: Vector2i, cell_data)
+signal pest_telegraphed(pos: Vector2i)
+signal stage_changed(stage_index: int)
+signal stage_cleared(stage_index: int)
+signal game_over(won: bool, reason: String)
+
+var state: GameState
+var config: GameConfig
+var registry: CropRegistry
+var game_ended: bool = false
+var stage_clear_showing: bool = false
+
+func _ready() -> void:
+	add_to_group("game_controller")
+	config = load("res://data/config/game_config.tres") as GameConfig
+	if not config:
+		config = GameConfig.new()
+	registry = CropRegistry.new()
+	state = GameState.new(config)
+	state.money = config.initial_money
+	state_changed.emit(state)
+
+func can_plant(cell: Vector2i, crop_id: String) -> bool:
+	if game_ended or stage_clear_showing:
+		return false
+	var def := registry.get_def(crop_id)
+	if not def or state.get_cell(cell) != null:
+		return false
+	if state.is_cell_forbidden_for_crop(cell, crop_id):
+		return false
+	return state.money >= def.cost
+
+func plant(cell: Vector2i, crop_id: String) -> bool:
+	if game_ended or stage_clear_showing:
+		return false
+	if not can_plant(cell, crop_id):
+		return false
+	var def := registry.get_def(crop_id)
+	state.money -= def.cost
+	var inst := CropInstance.new(crop_id, def.grow_time)
+	# Pumpkin: GT-1 if no crops within 1 grid
+	if def.type_enum == CropDef.Type.PUMPKIN:
+		var neighbors := GridRules.cells_in_chebyshev(state.size, cell, def.pumpkin_isolation_radius)
+		var isolated := true
+		for p in neighbors:
+			if state.get_cell(p) != null:
+				isolated = false
+				break
+		if isolated:
+			inst.remaining_grow = maxi(1, def.grow_time - 1)
+	# Chili: remove pests in range <= 2
+	if def.type_enum == CropDef.Type.CHILI:
+		var in_range := GridRules.cells_in_chebyshev(state.size, cell, def.chili_clean_radius)
+		in_range.append(cell)
+		for p in in_range:
+			var c = state.get_cell(p)
+			if c and c.has_pest:
+				c.has_pest = false
+				c.pest_rounds = 0
+	# Clear this cell from every crop's forbidden list (planting something else here frees it for other crops)
+	state.remove_forbidden_for_cell(cell)
+	state.set_cell(cell, inst)
+	state.add_forbidden(cell, crop_id)
+	cell_changed.emit(cell, inst)
+	state_changed.emit(state)
+	return true
+
+func harvest(cell: Vector2i) -> bool:
+	if game_ended or stage_clear_showing:
+		return false
+	var c = state.get_cell(cell)
+	if not c or c.remaining_grow > 0:
+		return false
+	var price: int = _harvest_price(cell, c)
+	state.money += price
+	state.clear_cell(cell)
+	cell_changed.emit(cell, null)
+	state_changed.emit(state)
+	return true
+
+func end_turn() -> void:
+	if game_ended or stage_clear_showing:
+		return
+	var cfg := config
+	var st := state
+	# Step 1: apply telegraphed pest (if global_turn >= 3); Chili immune; harvestable crops not targeted
+	if st.global_turn >= cfg.pest_start_turn and st.has_pest_telegraph():
+		var c = st.get_cell(st.next_pest_target)
+		if c and not c.has_pest and c.def_id != "chili" and c.remaining_grow > 0:
+			c.has_pest = true
+			c.pest_rounds = 0
+		st.next_pest_target = Vector2i(-1, -1)
+
+	# Step 2: pest rounds + destroy
+	for y in st.size.y:
+		for x in st.size.x:
+			var p: Vector2i = Vector2i(x, y)
+			var c = st.get_cell(p)
+			if c and c.has_pest:
+				c.pest_rounds += 1
+				if c.pest_rounds >= cfg.pest_destroy_rounds:
+					st.clear_cell(p)
+					cell_changed.emit(p, null)
+
+	# Step 3: Money Plant self-destruct
+	for y in st.size.y:
+		for x in st.size.x:
+			var p: Vector2i = Vector2i(x, y)
+			var c = st.get_cell(p)
+			if c and c.def_id == "moneyplant" and st.rng.randf() < cfg.moneyplant_self_destruct_prob:
+				st.clear_cell(p)
+				cell_changed.emit(p, null)
+
+	# Step 4: growth tick
+	for y in st.size.y:
+		for x in st.size.x:
+			var pos: Vector2i = Vector2i(x, y)
+			var c = st.get_cell(pos)
+			if c and not c.has_pest and c.remaining_grow > 0:
+				c.remaining_grow -= 1
+
+	# Step 5: no auto-harvest; player harvests by clicking harvestable cells
+
+	# Step 6: advance turn counters then stage end check (strictly 10 turns per stage)
+	st.global_turn += 1
+	st.turn_in_stage += 1
+	if st.turn_in_stage == 11:
+		if st.money >= st.stage_requirements[st.stage_index]:
+			if st.stage_index == 3:
+				game_ended = true
+				state_changed.emit(state)
+				game_over.emit(true, "Stage 4 cleared!")
+				return
+			stage_clear_showing = true
+			state_changed.emit(state)
+			stage_cleared.emit(st.stage_index)
+			return
+		else:
+			game_ended = true
+			state_changed.emit(state)
+			game_over.emit(false, "Stage requirement not met by turn 10.")
+			return
+
+	# Step 7: next pest telegraph (for next turn); Chili and harvestable crops not targeted
+	if st.global_turn + 1 >= cfg.pest_start_turn:
+		var candidates: Array[Vector2i] = []
+		for y in st.size.y:
+			for x in st.size.x:
+				var p: Vector2i = Vector2i(x, y)
+				var c = st.get_cell(p)
+				if c and not c.has_pest and c.def_id != "chili" and c.remaining_grow > 0:
+					candidates.append(p)
+		if candidates.size() > 0:
+			st.next_pest_target = candidates[st.rng.randi() % candidates.size()]
+			pest_telegraphed.emit(st.next_pest_target)
+		else:
+			st.next_pest_target = Vector2i(-1, -1)
+
+	state_changed.emit(state)
+
+func continue_to_next_stage() -> void:
+	stage_clear_showing = false
+	state.stage_index += 1
+	state.turn_in_stage = 1
+	stage_changed.emit(state.stage_index)
+	state_changed.emit(state)
+
+func get_sell_price(pos: Vector2i) -> int:
+	var c = state.get_cell(pos)
+	if not c:
+		return 0
+	return _harvest_price(pos, c)
+
+func _harvest_price(pos: Vector2i, crop: CropInstance) -> int:
+	var def := registry.get_def(crop.def_id)
+	if not def:
+		return 0
+	var price := def.base_price
+	if crop.def_id == "strawberry":
+		var comp := GridRules.connected_component_4dir(state.grid, state.size, pos, "strawberry")
+		price += comp.size() - 1
+	if crop.def_id == "sunflower":
+		var diag: Array[Vector2i] = GridRules.diag_rays_from(state.size, pos)
+		for i in range(diag.size()):
+			var p: Vector2i = diag[i]
+			if state.get_cell(p) != null:
+				price += 1
+	return price
+
+func restart() -> void:
+	game_ended = false
+	stage_clear_showing = false
+	state = GameState.new(config)
+	state.money = config.initial_money
+	state_changed.emit(state)
+	stage_changed.emit(0)
+	for y in state.size.y:
+		for x in state.size.x:
+			cell_changed.emit(Vector2i(x, y), null)
+	# Set initial pest telegraph for turn 3 if any crops
+	if state.global_turn + 2 >= config.pest_start_turn:
+		var candidates: Array[Vector2i] = []
+		for yy in state.size.y:
+			for xx in state.size.x:
+				var p: Vector2i = Vector2i(xx, yy)
+				if state.get_cell(p) != null:
+					candidates.append(p)
+		if candidates.size() > 0:
+			state.next_pest_target = candidates[state.rng.randi() % candidates.size()]
+			pest_telegraphed.emit(state.next_pest_target)
+	state_changed.emit(state)
