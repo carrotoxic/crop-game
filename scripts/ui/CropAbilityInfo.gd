@@ -6,15 +6,15 @@ const GRID_CENTER := Vector2i(2, 2)
 static func get_ability_text(crop_id: String) -> String:
 	match crop_id:
 		"pumpkin":
-			return "If no crops within 1 tile when planted: grows 1 turn faster."
+			return "Pumpkin:\nCost: 3  Sells: 5  Grows: 5\nIf no crops within 1 tile when planted: grows 1 turn faster."
 		"chili":
-			return "Immune to pests. On plant: removes pests from crops in horizontal and vertical lines, range 2."
+			return "Chili:\nCost: 2  Sells: 2  Grows: 6\nImmune to pests. On plant: removes pests from crops in horizontal and vertical lines, range 2."
 		"rose":
-			return "Other plants (not roses) in the 8 cells around it cannot be infested by pest. Rose can get pest even when fully grown, and can be destroyed by pest (3 rounds). Pest on Rose cannot be removed (e.g. by Chili)."
+			return "Rose:\nCost: 4  Sells: 15  Grows: 6\nPlants in the 8 cells around it cannot be infested by pest. Rose can get pest and can be destroyed by pest (3 rounds). Pest on Rose cannot be removed (e.g. by Chili)."
 		"strawberry":
-			return "Sell price +1 for each connected Strawberry (N/E/S/W)."
+			return "Strawberry:\nCost: 3  Sells: 5  Grows: 5\nSell price +1 for each connected Strawberry (N/E/S/W)."
 		"sunflower":
-			return "When fully grown: growth -1 once for each plant on its 4 diagonal lines."
+			return "Sunflower:\nCost: 4  Sells: 7  Grows: 5\nSell price +2 for each plant on its 4 diagonal lines."
 	return ""
 
 static func get_effect_cells(crop_id: String) -> Array[Vector2i]:

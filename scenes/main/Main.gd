@@ -20,4 +20,6 @@ func _on_state_changed(_state: GameState, end_turn_btn: Button, controller: Game
 	_update_end_turn(end_turn_btn, controller)
 
 func _update_end_turn(btn: Button, controller: GameController) -> void:
+	btn.disabled = true
+	btn.disabled = false
 	btn.disabled = controller.game_ended or controller.stage_clear_showing

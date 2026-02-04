@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://4yuucnkvfyc"]
+
+[ext_resource type="Script" uid="uid://ioooon5pdv8b" path="res://scenes/main/plant_pointer.gd" id="1_pnw0q"]
+[ext_resource type="Texture2D" uid="uid://dnwh2jws68wuo" path="res://art/plants-Sheet.png" id="2_2dhlh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ctbmm"]
+atlas = ExtResource("2_2dhlh")
+region = Rect2(160, 0, 32, 32)
+
+[node name="Plant_Pointer" type="Node2D" unique_id=1464376944]
+script = ExtResource("1_pnw0q")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2052836728]
+texture = SubResource("AtlasTexture_ctbmm")

@@ -1,39 +1,51 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://nyd4g7lywtk4"]
 
-[ext_resource type="Script" path="res://scenes/ui/HUDView.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://duuv7hhvfx71u" path="res://scenes/ui/HUDView.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c0ya42j2a5i2v" path="res://art/pixel_operator/PixelOperatorHB.ttf" id="2_atyv1"]
 
-[node name="HUD" type="PanelContainer"]
+[node name="HUD" type="PanelContainer" unique_id=1431868671]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -116.0
+offset_right = 116.0
+offset_bottom = 152.0
+grow_horizontal = 2
 script = ExtResource("1_script")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=1570042072]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=63679673]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="StageTurn" type="Label" parent="Margin/VBox"]
+[node name="StageTurn" type="Label" parent="Margin/VBox" unique_id=2110323923]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_atyv1")
 text = "Stage 1 | Turn 1/10"
 
-[node name="Money" type="Label" parent="Margin/VBox"]
+[node name="Money" type="Label" parent="Margin/VBox" unique_id=453752747]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_atyv1")
 text = "Money: 15"
 
-[node name="Requirement" type="Label" parent="Margin/VBox"]
+[node name="Requirement" type="Label" parent="Margin/VBox" unique_id=1126681471]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_atyv1")
 text = "Requirement: 10"
 
-[node name="ReqBar" type="ProgressBar" parent="Margin/VBox"]
+[node name="ReqBar" type="ProgressBar" parent="Margin/VBox" unique_id=289916273]
 custom_minimum_size = Vector2(200, 14)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_atyv1")
 max_value = 10.0
-value = 15.0
+value = 10.0
 
-[node name="Telegraph" type="Label" parent="Margin/VBox"]
+[node name="Telegraph" type="Label" parent="Margin/VBox" unique_id=538590199]
 layout_mode = 2
-text = ""
+theme_override_fonts/font = ExtResource("2_atyv1")

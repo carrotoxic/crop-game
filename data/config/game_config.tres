@@ -1,13 +1,9 @@
-[gd_resource type="Resource" script_class="GameConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="GameConfig" format=3 uid="uid://ch4oxaerh2wup"]
 
-[ext_resource type="Script" path="res://scripts/data/GameConfig.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bak1ogcqs075k" path="res://scripts/data/GameConfig.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-stage_requirements = [10, 25, 45, 70, 100]
+stage_requirements = Array[int]([10, 25, 45, 70])
 initial_money = 10
 board_size = Vector2i(5, 5)
-turns_per_stage = 10
-pest_start_turn = 3
-pest_destroy_rounds = 3
-seed_value = 12345

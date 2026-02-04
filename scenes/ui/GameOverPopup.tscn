@@ -1,29 +1,41 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://bybt3hn27u53j"]
 
-[ext_resource type="Script" path="res://scenes/ui/GameOverPopup.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://caw12w1k13i15" path="res://scenes/ui/GameOverPopup.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://c0ya42j2a5i2v" path="res://art/pixel_operator/PixelOperatorHB.ttf" id="2_ygxuu"]
 
-[node name="GameOverPopup" type="PopupPanel"]
+[node name="GameOverPopup" type="PopupPanel" unique_id=1553513379]
+oversampling_override = 1.0
+size = Vector2i(152, 161)
+visible = true
 script = ExtResource("1_script")
 
-[node name="Margin" type="MarginContainer" parent="."]
-layout_mode = 1
+[node name="Margin" type="MarginContainer" parent="." unique_id=860425926]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 148.0
+offset_bottom = 157.0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=830035088]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Margin/VBox"]
+[node name="Title" type="Label" parent="Margin/VBox" unique_id=639193507]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ygxuu")
+theme_override_font_sizes/font_size = 24
 text = "Game Over"
 
-[node name="Reason" type="Label" parent="Margin/VBox"]
+[node name="Reason" type="Label" parent="Margin/VBox" unique_id=1895431443]
 layout_mode = 2
-text = ""
+theme_override_fonts/font = ExtResource("2_ygxuu")
+theme_override_font_sizes/font_size = 20
 
-[node name="Restart" type="Button" parent="Margin/VBox"]
+[node name="Restart" type="Button" parent="Margin/VBox" unique_id=1896853672]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ygxuu")
+theme_override_font_sizes/font_size = 20
 text = "Restart"

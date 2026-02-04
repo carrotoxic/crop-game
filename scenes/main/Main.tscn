@@ -1,72 +1,177 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://d2dbd30v4eny7"]
 
-[ext_resource type="Script" path="res://scripts/core/GameController.gd" id="1_script"]
-[ext_resource type="Script" path="res://scenes/main/Main.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://b0hvq4qcnrlkq" path="res://scripts/core/GameController.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bsvtpohdhplyp" path="res://scenes/main/Main.gd" id="2_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/RuleBoard.tscn" id="3_rules"]
-[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://nyd4g7lywtk4" path="res://scenes/ui/HUD.tscn" id="4_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/GridView.tscn" id="5_grid"]
-[ext_resource type="PackedScene" path="res://scenes/ui/CardBar.tscn" id="6_cards"]
-[ext_resource type="PackedScene" path="res://scenes/ui/GameOverPopup.tscn" id="7_popup"]
-[ext_resource type="PackedScene" path="res://scenes/ui/StageClearPopup.tscn" id="8_stage"]
+[ext_resource type="PackedScene" uid="uid://ptg3pjw1mju4" path="res://scenes/ui/CardBar.tscn" id="6_cards"]
+[ext_resource type="FontFile" uid="uid://c0ya42j2a5i2v" path="res://art/pixel_operator/PixelOperatorHB.ttf" id="6_jsdfw"]
+[ext_resource type="PackedScene" uid="uid://bybt3hn27u53j" path="res://scenes/ui/GameOverPopup.tscn" id="7_popup"]
+[ext_resource type="PackedScene" uid="uid://d0trf0u1g2iwm" path="res://scenes/ui/StageClearPopup.tscn" id="8_stage"]
+[ext_resource type="Texture2D" uid="uid://dhei6lbhaxqvt" path="res://art/Select-Sheet.png" id="9_ostsq"]
+[ext_resource type="Texture2D" uid="uid://dvd6yj81npv8a" path="res://art/BaseGrassTile-Sheet.png" id="10_qkm1d"]
+[ext_resource type="Texture2D" uid="uid://7xsbngm56cwv" path="res://art/Seeds-Sheet.png" id="11_2tpxt"]
+[ext_resource type="Texture2D" uid="uid://d1wqp6po5l481" path="res://art/GrassExtended.png" id="11_p5fgu"]
+[ext_resource type="Script" uid="uid://nmye7rq4t2e1" path="res://scenes/main/cursor.gd" id="12_p5fgu"]
 
-[node name="Main" type="Node"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2tpxt"]
+texture = ExtResource("10_qkm1d")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jsdfw"]
+texture = ExtResource("11_p5fgu")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_tck0d"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_2tpxt")
+sources/1 = SubResource("TileSetAtlasSource_jsdfw")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3km4f"]
+atlas = ExtResource("9_ostsq")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qkm1d"]
+atlas = ExtResource("9_ostsq")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p5fgu"]
+atlas = ExtResource("9_ostsq")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2tpxt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3km4f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qkm1d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p5fgu")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Main" type="Node" unique_id=1991410124]
 script = ExtResource("2_script")
 
-[node name="GameController" type="Node" parent="."]
+[node name="GameController" type="Node" parent="." unique_id=1013735647]
 script = ExtResource("1_script")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=806798167]
+process_mode = 3
 
-[node name="Background" type="ColorRect" parent="UI"]
-layout_mode = 1
+[node name="Background" type="ColorRect" parent="UI" unique_id=125049025]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.98, 0.973, 0.961, 1)
 
-[node name="HBoxRoot" type="HBoxContainer" parent="UI"]
-layout_mode = 1
+[node name="HBoxRoot" type="HBoxContainer" parent="UI" unique_id=1875521293]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/separation = 8
 
-[node name="RuleBoard" parent="UI/HBoxRoot" instance=ExtResource("3_rules")]
-layout_mode = 2
+[node name="RuleBoard" parent="UI/HBoxRoot" unique_id=1994987099 instance=ExtResource("3_rules")]
 
-[node name="VBoxRoot" type="VBoxContainer" parent="UI/HBoxRoot"]
+[node name="VBoxRoot" type="VBoxContainer" parent="UI/HBoxRoot" unique_id=1269845659]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="HUD" parent="UI/HBoxRoot/VBoxRoot" instance=ExtResource("4_hud")]
+[node name="HUD" parent="UI/HBoxRoot/VBoxRoot" unique_id=1789518325 instance=ExtResource("4_hud")]
 layout_mode = 2
 
-[node name="GridArea" type="Control" parent="UI/HBoxRoot/VBoxRoot"]
+[node name="GridArea" type="Control" parent="UI/HBoxRoot/VBoxRoot" unique_id=604571554]
+visible = false
+modulate = Color(1, 1, 1, 0.3764706)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CenterContainer" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot/GridArea"]
+[node name="CenterContainer" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot/GridArea" unique_id=1418414767]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="GridView" parent="UI/HBoxRoot/VBoxRoot/GridArea/CenterContainer" instance=ExtResource("5_grid")]
+[node name="GridView" parent="UI/HBoxRoot/VBoxRoot/GridArea/CenterContainer" unique_id=2049993314 instance=ExtResource("5_grid")]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="EndTurnRow" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/HBoxRoot/VBoxRoot" unique_id=1117791937]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EndTurnRow" type="CenterContainer" parent="UI/HBoxRoot/VBoxRoot" unique_id=222716892]
+process_mode = 3
 layout_mode = 2
 
-[node name="EndTurn" type="Button" parent="UI/HBoxRoot/VBoxRoot/EndTurnRow"]
-custom_minimum_size = Vector2(130, 38)
+[node name="EndTurn" type="Button" parent="UI/HBoxRoot/VBoxRoot/EndTurnRow" unique_id=574295434]
+process_mode = 3
 layout_mode = 2
-text = "End Turn"
+focus_mode = 0
+theme_override_fonts/font = ExtResource("6_jsdfw")
+theme_override_font_sizes/font_size = 24
+action_mode = 0
+text = " End Turn "
 
-[node name="CardBar" parent="UI/HBoxRoot/VBoxRoot" instance=ExtResource("6_cards")]
+[node name="CardBar" parent="UI/HBoxRoot/VBoxRoot" unique_id=2104259787 instance=ExtResource("6_cards")]
 layout_mode = 2
+mouse_filter = 2
 
-[node name="GameOverPopup" parent="." instance=ExtResource("7_popup")]
+[node name="GameOverPopup" parent="." unique_id=952274239 instance=ExtResource("7_popup")]
 
-[node name="StageClearPopup" parent="." instance=ExtResource("8_stage")]
+[node name="StageClearPopup" parent="." unique_id=284373186 instance=ExtResource("8_stage")]
+
+[node name="Node2D" type="Node2D" parent="." unique_id=366266086]
+
+[node name="TileMap" type="TileMap" parent="Node2D" unique_id=648019645]
+position = Vector2(16, 16)
+tile_set = SubResource("TileSet_tck0d")
+format = 2
+layer_0/tile_data = PackedInt32Array(-1, 0, 0, -65536, 0, 0, -2, 0, 0, -65538, 0, 0, -65537, 0, 0, -131072, 0, 0, 0, 0, 0, 65535, 0, 0, 65534, 0, 0, 65533, 65536, 0, -3, 65536, 0, -65539, 65536, 0, -131075, 131072, 0, -131071, 196608, 0, -65535, 196608, 0, 1, 196608, 0, 65537, 196608, 0, 131069, 65536, 0, -196607, 262144, 0, -131074, 327680, 0, -131073, 327680, 0, -196608, 327680, 0, 131070, 0, 0, 131071, 0, 0, 65536, 0, 0, 196605, 1, 1, 196606, 65537, 1, 196607, 131073, 1, 131072, 196609, 1, 131073, 262145, 1)
+
+[node name="Seeds" type="Sprite2D" parent="Node2D" unique_id=1001621226]
+position = Vector2(0, 160)
+texture = ExtResource("11_2tpxt")
+
+[node name="Cursor" type="AnimatedSprite2D" parent="Node2D" unique_id=1566303171]
+sprite_frames = SubResource("SpriteFrames_2tpxt")
+autoplay = "default"
+script = ExtResource("12_p5fgu")
+
+[node name="Camera2D" type="Camera2D" parent="Node2D" unique_id=395265678]
+zoom = Vector2(2, 2)
+
+[node name="Pointers" type="Node2D" parent="Node2D" unique_id=1609352134]
+
+[node name="PestsHome" type="Node2D" parent="Node2D" unique_id=831342633]
